@@ -1,0 +1,4 @@
+%% encoding: UTF-8
+{application,exometer_collectd}.
+{packages,[]}.
+{modules,[exometer_report_collectd]}.

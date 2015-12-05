@@ -89,7 +89,7 @@
 %% calendar:datetime_to_gregorian_seconds({{1970,1,1},{0,0,0}}).
 -define(UNIX_EPOCH, 62167219200).
 
--include_lib("exometer_core/src/log.hrl").
+-include("log.hrl").
 
 exometer_init(Opts) ->
     ?info("exometer_report_collectd(~p): Starting~n", [Opts]),

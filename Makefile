@@ -9,7 +9,7 @@ DIALYZER_APPS = erts kernel stdlib compiler syntax_tools snmp ssl ssh \
 
 all: deps compile xref test
 
-ci: compile xref test
+ci: deps compile xref test
 
 deps:
 	rebar get-deps

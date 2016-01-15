@@ -6,6 +6,8 @@
 
 @doc
 
+[![Build Status](https://travis-ci.org/Feuerlabs/exometer_collectd.png?branch=master)](https://travis-ci.org/Feuerlabs/exometer_collectd)
+
 === exometer_report_collectd ===
 
 The collectd reporter communicates with a local `collectd' process

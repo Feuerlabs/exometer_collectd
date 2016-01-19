@@ -4,9 +4,11 @@
 
 Copyright (c) 2014 Basho Technologies, Inc.  All Rights Reserved.
 
-__Version:__ Dec 18 2014 20:01:02
+__Version:__ Jan 15 2016 10:34:32
 
 __Authors:__ Ulf Wiger ([`ulf.wiger@feuerlabs.com`](mailto:ulf.wiger@feuerlabs.com)), Magnus Feuer ([`magnus.feuer@feuerlabs.com`](mailto:magnus.feuer@feuerlabs.com)).
+
+[![Build Status](https://travis-ci.org/Feuerlabs/exometer_collectd.png?branch=master)](https://travis-ci.org/Feuerlabs/exometer_collectd)
 
 
 #### <a name="exometer_report_collectd">exometer_report_collectd</a> ####
@@ -132,7 +134,6 @@ exometer.template.gauge.module     = exometer_folsom
 
 #### <a name="Configuring_static_subscriptions">Configuring static subscriptions</a> ####
 
-
 Static subscriptions, which are automatically setup at exometer
 startup without having to invoke `exometer_report:subscribe()`, are
 configured through the report sub section under exometer.
@@ -233,7 +234,6 @@ This will activate a subscription on `[a,1]` and `[a,2]` in the
 
 #### <a name="Configuring_collectd_reporter">Configuring collectd reporter</a> ####
 
-
 Below is an example of the collectd reporter application environment, with
 its correct location in the hierarchy:
 
@@ -309,6 +309,7 @@ between the type of a metric/datapoint pair and an identifier in
 collectd. The `type_map` consists of a prop list that converts a path
 to a metric/datapoint to a string that can be used as a type when
 reporting to collectd.
+
 The key part of each element in the list consists of a list of atoms
 that matches the name of the metrics, with the name of the data point
 added as a final element. If the metric is identified as `[ webserver,
@@ -318,11 +319,3 @@ value part of a property is the type string to use when reporting to
 collectd. Please see types.db(5) for a list of available collectd
 types.  A complete entry in the `type_map` list would be: `{ [
 webserver, https, get_count, total ], "counter" }`.
-
-
-## Modules ##
-
-
-<table width="100%" border="0" summary="list of modules">
-<tr><td><a href="https://github.com/Feuerlabs/exometer_collectd/blob/master/doc/exometer_report_collectd.md" class="module">exometer_report_collectd</a></td></tr></table>
-

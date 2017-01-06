@@ -311,6 +311,12 @@ ets_key(Metric, DataPoint) ->
     Metric ++ [ DataPoint ].
 
 %% Add metric and datapoint within metric
+name(Metric, DataPoint) when is_integer(DataPoint) or is_float(DataPoint) ->
+    name(Metric, value(DataPoint));
+
+name(Metric, DataPoint) when is_atom(DataPoint) ->
+    name(Metric, atom_to_list(DataPoint));
+
 name(Metric, DataPoint) ->
     metric_to_string(Metric) ++ "_" ++ atom_to_list(DataPoint).
 

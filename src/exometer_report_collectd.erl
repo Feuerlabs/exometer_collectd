@@ -318,7 +318,7 @@ name(Metric, DataPoint) when is_atom(DataPoint) ->
     name(Metric, atom_to_list(DataPoint));
 
 name(Metric, DataPoint) ->
-    metric_to_string(Metric) ++ "_" ++ atom_to_list(DataPoint).
+    metric_to_string(Metric) ++ "_" ++ DataPoint.
 
 metric_to_string([Final]) ->
     metric_elem_to_list(Final);

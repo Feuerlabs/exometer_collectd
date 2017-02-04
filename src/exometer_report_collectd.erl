@@ -121,7 +121,7 @@ exometer_init(Opts) ->
         {ok, Sock} ->
 	    {ok, St0#st{socket = Sock}};
         {error, _} = Error ->
-            ?log(warn, "Exometer collectd connection failed; ~p. Retry in ~p~n",
+            ?log(warning, "Exometer collectd connection failed; ~p. Retry in ~p~n",
 		     [Error, ReconnectInterval]),
 	    prepare_reconnect(),
 	    {ok, St0}
@@ -160,7 +160,7 @@ exometer_unsubscribe(Metric, DataPoint, _Extra, St) ->
 %% Exometer report when no collectd socket connection exists.
 exometer_report(_Metric, _DataPoint, _Extra, _Value, St)
   when St#st.socket =:= undefined ->
-    ?log(warn, "Report metric: No connection. Value lost~n"),
+    ?log(warning, "Report metric: No connection. Value lost~n"),
     {ok, St};
 
 %% Invoked through the remote_exometer() function to
@@ -198,7 +198,7 @@ exometer_info({exometer_callback, prepare_reconnect},
 	    reconnect_after(Int),
 	    {ok, St#st{connect_retries = Retries1}};
 	{false, _} ->
-	    ?log(warn, "Reached max connection retries, disabling~n", []),
+	    ?log(warning, "Reached max connection retries, disabling~n", []),
 	    exometer_report:disable_me(?MODULE, St)
     end;
 exometer_info({exometer_callback, refresh_metric,
@@ -222,7 +222,7 @@ exometer_info({exometer_callback, reconnect}, St) ->
         {ok, NSt} ->
             {ok, NSt};
         Err  ->
-            ?log(warn, "Could not reconnect: ~p~n", [Err]),
+            ?log(warning, "Could not reconnect: ~p~n", [Err]),
 	    prepare_reconnect(),
             {ok, St}
     end;
@@ -247,7 +247,7 @@ report_exometer_(Metric, DataPoint, Extra, Value,
                      type_map = TypeMap} = St) ->
     case get_type(TypeMap, Extra, ets_key(Metric, DataPoint)) of
         error ->
-            ?log(warn, 
+            ?log(warning, 
                "Could not resolve ~p to a collectd type."
                "Update exometer_report_collectd -> type_map in app.config. "
                "Value lost~n", [ets_key(Metric, DataPoint)]),
@@ -284,14 +284,14 @@ send_request(Sock, Request, Metric, DataPoint, Extra, Value,
                 _ ->
                     %% We failed to receive data,
                     %% close and setup later reconnect
-                    ?log(warn, "Failed to receive. Will reconnect in ~p~n",
+                    ?log(warning, "Failed to receive. Will reconnect in ~p~n",
                              [St#st.reconnect_interval]),
                     maybe_reconnect_after(Sock),
                     St#st{socket = undefined}
             end;
         {error, enotconn} ->
             %% Socket is not connected, setup later reconnect
-            ?log(warn, "Failed to send. Will reconnect in ~p~n",
+            ?log(warning, "Failed to send. Will reconnect in ~p~n",
                      [St#st.reconnect_interval]),
             maybe_reconnect_after(Sock),
             St#st{socket = undefined};
@@ -300,7 +300,7 @@ send_request(Sock, Request, Metric, DataPoint, Extra, Value,
     catch
         error:_ ->
             %% We failed to receive data, close and setup later reconnect
-            ?log(warn, "Failed to send. Will reconnect in ~p~n",
+            ?log(warning, "Failed to send. Will reconnect in ~p~n",
                      [St#st.reconnect_interval]),
             maybe_reconnect_after(Sock),
             St#st {socket = undefined}

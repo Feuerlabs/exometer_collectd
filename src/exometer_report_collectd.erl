@@ -91,7 +91,7 @@
 -define(UNIX_EPOCH, 62167219200).
 
 exometer_init(Opts) ->
-    ?log(info, "exometer_report_collectd(~p): Starting~n", [Opts]),
+    ?log(info, "Exometer(~p): Starting~n", [Opts]),
     SockPath = get_opt(path, Opts, ?DEFAULT_PATH),
     ConnectTimeout = get_opt(connect_timeout, Opts, ?CONNECT_TIMEOUT),
     ReconnectInterval =
@@ -119,6 +119,7 @@ exometer_init(Opts) ->
 	     },
     case connect_collectd(SockPath, ConnectTimeout) of
         {ok, Sock} ->
+            ?log(info, "Exometer collectd connection succeeded"),
 	    {ok, St0#st{socket = Sock}};
         {error, _} = Error ->
             ?log(warning, "Exometer collectd connection failed; ~p. Retry in ~p~n",
@@ -247,7 +248,7 @@ report_exometer_(Metric, DataPoint, Extra, Value,
                      type_map = TypeMap} = St) ->
     case get_type(TypeMap, Extra, ets_key(Metric, DataPoint)) of
         error ->
-            ?log(warning, 
+            ?log(warning,
                "Could not resolve ~p to a collectd type."
                "Update exometer_report_collectd -> type_map in app.config. "
                "Value lost~n", [ets_key(Metric, DataPoint)]),
@@ -262,9 +263,9 @@ report_exometer_(Metric, DataPoint, Extra, Value,
 
 send_request(Sock, Request, Metric, DataPoint, Extra, Value,
              #st{read_timeout = TOut} = St) ->
-    try afunix:send(Sock, Request) of
+    try gen_tcp:send(Sock, Request) of
         ok ->
-            case afunix:recv(Sock, 0, TOut) of
+            case gen_tcp:recv(Sock, 0, TOut) of
                 {ok, Bin} ->
                     %% Parse the reply
                     case parse_reply(Request, Bin, St) of
@@ -351,7 +352,7 @@ connect_collectd(St) ->
     end.
 
 connect_collectd(SocketPath, ConnectTimeout) ->
-    afunix:connect(SocketPath, [{active, false}, {mode, binary}], ConnectTimeout).
+    gen_tcp:connect({local, SocketPath}, 0, [{active, false}, {mode, binary}, local], ConnectTimeout).
 
 unix_time() ->
     datetime_to_unix_time(erlang:universaltime()).
@@ -422,7 +423,7 @@ get_type(TypeMap, Extra, Name) ->
 
 maybe_reconnect_after(Socket) ->
     %% Close socket if open
-    if Socket =/= undefined -> afunix:close(Socket);
+    if Socket =/= undefined -> gen_tcp:close(Socket);
         true -> true
     end,
     prepare_reconnect().

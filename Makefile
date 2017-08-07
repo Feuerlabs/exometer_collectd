@@ -4,10 +4,10 @@ EXOMETER_PLT=exometer_collectd.plt
 DIALYZER_OPTS = # -Wunderspecs
 DIALYZER_APPS = erts kernel stdlib compiler syntax_tools snmp ssl ssh \
 		crypto public_key test_server webtool xmerl common_test \
-		lager goldrush afunix folsom mnesia parse_trans \
+		goldrush afunix folsom mnesia parse_trans \
 		setup exometer_core
 
-all: deps compile xref test
+all: deps compile
 
 ci: deps compile xref test
 

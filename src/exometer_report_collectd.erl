@@ -161,7 +161,6 @@ exometer_unsubscribe(Metric, DataPoint, _Extra, St) ->
 %% Exometer report when no collectd socket connection exists.
 exometer_report(_Metric, _DataPoint, _Extra, _Value, St)
   when St#st.socket =:= undefined ->
-    ?log(warning, "Report metric: No connection. Value lost~n"),
     {ok, St};
 
 %% Invoked through the remote_exometer() function to

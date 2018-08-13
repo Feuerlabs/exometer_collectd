@@ -217,12 +217,11 @@ exometer_info({exometer_callback, refresh_metric,
             {ok, report_exometer_(Metric, DataPoint, Extra, Value, St)}
     end;
 exometer_info({exometer_callback, reconnect}, St) ->
-    ?log(info, "Reconnecting: ~p~n", [St]),
     case connect_collectd(St) of
         {ok, NSt} ->
             {ok, NSt};
         Err  ->
-            ?log(warning, "Could not reconnect: ~p~n", [Err]),
+            Err,
 	    prepare_reconnect(),
             {ok, St}
     end;

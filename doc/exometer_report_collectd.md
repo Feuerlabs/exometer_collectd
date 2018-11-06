@@ -7,7 +7,7 @@
 
 Custom reporting probe for Hosted Graphite.
 
-__Behaviours:__ [`exometer_report`](/home/tino/Documents/2working/exometer_collectd/deps/exometer_core/doc/exometer_report.md).
+__Behaviours:__ [`exometer_report`](/Volumes/POUCH/2working/exometer_collectd/_checkouts/exometer_core/doc/exometer_report.md).
 
 <a name="description"></a>
 

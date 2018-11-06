@@ -4,11 +4,15 @@
 
 Copyright (c) 2014 Basho Technologies, Inc.  All Rights Reserved.
 
-__Version:__ Jan 15 2016 10:34:32
+__Version:__ Nov 6 2018 08:44:40
 
 __Authors:__ Ulf Wiger ([`ulf.wiger@feuerlabs.com`](mailto:ulf.wiger@feuerlabs.com)), Magnus Feuer ([`magnus.feuer@feuerlabs.com`](mailto:magnus.feuer@feuerlabs.com)).
 
-[![Build Status](https://travis-ci.org/Feuerlabs/exometer_collectd.png?branch=master)](https://travis-ci.org/Feuerlabs/exometer_collectd)
+[![Travis][travis badge]][travis]
+[![Hex.pm Version][hex version badge]][hex]
+[![Hex.pm License][hex license badge]][hex]
+[![Erlang Versions][erlang version badge]][travis]
+[![Build Tool][build tool]][hex]
 
 
 #### <a name="exometer_report_collectd">exometer_report_collectd</a> ####
@@ -319,3 +323,19 @@ value part of a property is the type string to use when reporting to
 collectd. Please see types.db(5) for a list of available collectd
 types.  A complete entry in the `type_map` list would be: `{ [
 webserver, https, get_count, total ], "counter" }`.
+
+[travis]: https://travis-ci.org/Feuerlabs/exometer_collectd
+[travis badge]: https://img.shields.io/travis/Feuerlabs/exometer_collectd/master.svg?style=flat-square
+[hex]: https://hex.pm/packages/exometer_collectd
+[hex version badge]: https://img.shields.io/hexpm/v/exometer_collectd.svg?style=flat-square
+[hex license badge]: https://img.shields.io/hexpm/l/exometer_collectd.svg?style=flat-square
+[erlang version badge]: https://img.shields.io/badge/erlang-18--21-blue.svg?style=flat-square
+[build tool]: https://img.shields.io/badge/build%20tool-rebar3-orange.svg?style=flat-square
+
+
+## Modules ##
+
+
+<table width="100%" border="0" summary="list of modules">
+<tr><td><a href="https://github.com/Feuerlabs/exometer_collectd/blob/master/doc/exometer_report_collectd.md" class="module">exometer_report_collectd</a></td></tr></table>
+

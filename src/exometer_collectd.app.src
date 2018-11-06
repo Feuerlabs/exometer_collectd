@@ -1,19 +1,11 @@
-%% -*- erlang-indent-level: 4; indent-tabs-mode: nil -*-
-{application, exometer_collectd,
- [
-  {description, "Exometer reporter for collectd"},
-  {vsn, "1.0.1"},
-  {registered, []},
-  {applications,
-   [
-    kernel,
-    stdlib,
-    afunix,
-    exometer_core
-   ]},
-  {included_applications, []},
-  {env, []},
-  {maintainers, ["Ulf Wiger", "Tino Breddin"]},
-  {licenses, ["MPL-2.0"]},
-  {links, [{"Github", "https://github.com/Feuerlabs/exometer_collectd"}]}
- ]}.
+{application,exometer_collectd,
+             [{description,"Exometer reporter for collectd"},
+              {vsn,"1.1.0"},
+              {registered,[]},
+              {applications,[kernel,stdlib,afunix,exometer_core]},
+              {included_applications,[]},
+              {env,[]},
+              {maintainers,["Ulf Wiger","Tino Breddin"]},
+              {licenses,["MPL-2.0"]},
+              {links,[{"Github",
+                       "https://github.com/Feuerlabs/exometer_collectd"}]}]}.

@@ -91,7 +91,7 @@
 -define(UNIX_EPOCH, 62167219200).
 
 exometer_init(Opts) ->
-    ?log(info, "exometer_report_collectd(~p): Starting~n", [Opts]),
+    ?log(info, "Exometer(~p): Starting~n", [Opts]),
     SockPath = get_opt(path, Opts, ?DEFAULT_PATH),
     ConnectTimeout = get_opt(connect_timeout, Opts, ?CONNECT_TIMEOUT),
     ReconnectInterval =
@@ -119,6 +119,7 @@ exometer_init(Opts) ->
 	     },
     case connect_collectd(SockPath, ConnectTimeout) of
         {ok, Sock} ->
+            ?log(info, "Exometer collectd connection succeeded"),
 	    {ok, St0#st{socket = Sock}};
         {error, _} = Error ->
             ?log(warning, "Exometer collectd connection failed; ~p. Retry in ~p~n",
@@ -160,7 +161,6 @@ exometer_unsubscribe(Metric, DataPoint, _Extra, St) ->
 %% Exometer report when no collectd socket connection exists.
 exometer_report(_Metric, _DataPoint, _Extra, _Value, St)
   when St#st.socket =:= undefined ->
-    ?log(warning, "Report metric: No connection. Value lost~n"),
     {ok, St};
 
 %% Invoked through the remote_exometer() function to
@@ -217,12 +217,11 @@ exometer_info({exometer_callback, refresh_metric,
             {ok, report_exometer_(Metric, DataPoint, Extra, Value, St)}
     end;
 exometer_info({exometer_callback, reconnect}, St) ->
-    ?log(info, "Reconnecting: ~p~n", [St]),
     case connect_collectd(St) of
         {ok, NSt} ->
             {ok, NSt};
         Err  ->
-            ?log(warning, "Could not reconnect: ~p~n", [Err]),
+            Err,
 	    prepare_reconnect(),
             {ok, St}
     end;
@@ -247,7 +246,7 @@ report_exometer_(Metric, DataPoint, Extra, Value,
                      type_map = TypeMap} = St) ->
     case get_type(TypeMap, Extra, ets_key(Metric, DataPoint)) of
         error ->
-            ?log(warning, 
+            ?log(warning,
                "Could not resolve ~p to a collectd type."
                "Update exometer_report_collectd -> type_map in app.config. "
                "Value lost~n", [ets_key(Metric, DataPoint)]),
@@ -262,9 +261,9 @@ report_exometer_(Metric, DataPoint, Extra, Value,
 
 send_request(Sock, Request, Metric, DataPoint, Extra, Value,
              #st{read_timeout = TOut} = St) ->
-    try afunix:send(Sock, Request) of
+    try gen_tcp:send(Sock, Request) of
         ok ->
-            case afunix:recv(Sock, 0, TOut) of
+            case gen_tcp:recv(Sock, 0, TOut) of
                 {ok, Bin} ->
                     %% Parse the reply
                     case parse_reply(Request, Bin, St) of
@@ -310,8 +309,14 @@ ets_key(Metric, DataPoint) ->
     Metric ++ [ DataPoint ].
 
 %% Add metric and datapoint within metric
+name(Metric, DataPoint) when is_integer(DataPoint) or is_float(DataPoint) ->
+    name(Metric, value(DataPoint));
+
+name(Metric, DataPoint) when is_atom(DataPoint) ->
+    name(Metric, atom_to_list(DataPoint));
+
 name(Metric, DataPoint) ->
-    metric_to_string(Metric) ++ "_" ++ atom_to_list(DataPoint).
+    metric_to_string(Metric) ++ "_" ++ DataPoint.
 
 metric_to_string([Final]) ->
     metric_elem_to_list(Final);
@@ -345,7 +350,7 @@ connect_collectd(St) ->
     end.
 
 connect_collectd(SocketPath, ConnectTimeout) ->
-    afunix:connect(SocketPath, [{active, false}, {mode, binary}], ConnectTimeout).
+    gen_tcp:connect({local, SocketPath}, 0, [{active, false}, {mode, binary}, local], ConnectTimeout).
 
 unix_time() ->
     datetime_to_unix_time(erlang:universaltime()).
@@ -416,7 +421,7 @@ get_type(TypeMap, Extra, Name) ->
 
 maybe_reconnect_after(Socket) ->
     %% Close socket if open
-    if Socket =/= undefined -> afunix:close(Socket);
+    if Socket =/= undefined -> gen_tcp:close(Socket);
         true -> true
     end,
     prepare_reconnect().

@@ -208,11 +208,8 @@ exometer_info({exometer_callback, refresh_metric,
     %% the entry, and we should do nothing.
     case ets:lookup(exometer_collectd, ets_key(Metric, DataPoint)) of
         [] ->
-            ?log(debug, "refresh_metric(~p, ~p): No longer subscribed~n",
-                   [Metric, DataPoint]),
              {ok, St};
         [{_, _TRef}] ->
-                  [Metric, DataPoint, Value]),
             {ok, report_exometer_(Metric, DataPoint, Extra, Value, St)}
     end;
 exometer_info({exometer_callback, reconnect}, St) ->
